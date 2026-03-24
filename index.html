@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FormLab — GTM Practice Site</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+
+<!-- GTM HEAD SNIPPET (replace GTM-XXXXXXX with your container ID) -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-XXXXXXX');</script>
+
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #161616;
+    --border: #2a2a2a;
+    --accent: #c8f04b;
+    --accent2: #f04b8a;
+    --text: #f0ede8;
+    --muted: #666;
+    --radius: 4px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2rem 2.5rem;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: rgba(13,13,13,0.95);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.3rem;
+    letter-spacing: -0.02em;
+    color: var(--accent);
+    cursor: pointer;
+  }
+  .nav-logo span { color: var(--text); }
+  .nav-links { display: flex; gap: 0.5rem; }
+  .nav-link {
+    background: none;
+    border: 1px solid transparent;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    padding: 0.4rem 1rem;
+    cursor: pointer;
+    border-radius: var(--radius);
+    transition: all 0.2s;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .nav-link:hover { color: var(--text); border-color: var(--border); }
+  .nav-link.active { color: var(--accent); border-color: var(--accent); }
+
+  /* GTM BADGE */
+  .gtm-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: #1a1a1a;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.35rem 0.85rem;
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+  .gtm-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #555;
+    transition: background 0.3s;
+  }
+  .gtm-dot.active { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+
+  /* PAGES */
+  .page { display: none; animation: fadeIn 0.35s ease; }
+  .page.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  /* HERO STRIP */
+  .hero-strip {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 3.5rem 2.5rem 2rem;
+    border-bottom: 1px solid var(--border);
+    gap: 1rem;
+  }
+  .hero-tag {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.6rem;
+  }
+  .hero-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+  }
+  .hero-title em { font-style: normal; color: var(--accent); }
+  .hero-desc {
+    max-width: 380px;
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-top: 1rem;
+  }
+  .page-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 5rem;
+    font-weight: 800;
+    color: var(--border);
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  /* MAIN LAYOUT */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 0;
+    min-height: calc(100vh - 200px);
+  }
+  .form-area {
+    padding: 2.5rem;
+    border-right: 1px solid var(--border);
+  }
+  .sidebar {
+    padding: 2rem;
+    background: var(--surface);
+  }
+
+  /* SECTION LABEL */
+  .section-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* FORM STYLES */
+  .form-group {
+    margin-bottom: 1.6rem;
+  }
+  label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  label span { color: var(--accent2); margin-left: 2px; }
+  input, select, textarea {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.88rem;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    appearance: none;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(200,240,75,0.12);
+  }
+  textarea { resize: vertical; min-height: 100px; }
+  select option { background: #1a1a1a; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+  /* RADIO / CHECKBOX GROUP */
+  .radio-group, .check-group { display: flex; flex-direction: column; gap: 0.5rem; }
+  .radio-item, .check-item {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: var(--text);
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .radio-item:hover, .check-item:hover { border-color: var(--muted); background: rgba(255,255,255,0.02); }
+  .radio-item input, .check-item input {
+    width: auto;
+    accent-color: var(--accent);
+    width: 14px; height: 14px;
+  }
+  .radio-item.selected, .check-item.selected { border-color: var(--accent); background: rgba(200,240,75,0.05); }
+
+  /* SUBMIT BUTTON */
+  .btn-submit {
+    width: 100%;
+    padding: 1rem;
+    background: var(--accent);
+    color: #0d0d0d;
+    border: none;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.02em;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    margin-top: 0.5rem;
+  }
+  .btn-submit:hover { opacity: 0.9; }
+  .btn-submit:active { transform: scale(0.99); }
+  .btn-submit.btn-pink { background: var(--accent2); }
+
+  /* SUCCESS TOAST */
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--accent);
+    color: #0d0d0d;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 1rem 1.5rem;
+    border-radius: var(--radius);
+    z-index: 200;
+    transform: translateY(80px);
+    opacity: 0;
+    transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s;
+    pointer-events: none;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* SIDEBAR: EVENT LOG */
+  .sidebar-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--text);
+    margin-bottom: 1.2rem;
+  }
+  .event-log {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    max-height: 55vh;
+    overflow-y: auto;
+  }
+  .event-item {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.7rem 0.9rem;
+    font-size: 0.72rem;
+    line-height: 1.6;
+    animation: slideIn 0.3s ease;
+  }
+  @keyframes slideIn { from { opacity: 0; transform: translateX(10px); } to { opacity:1; transform: none; } }
+  .event-name { color: var(--accent); font-weight: 500; }
+  .event-time { color: var(--muted); float: right; }
+  .event-data { color: #aaa; margin-top: 0.3rem; word-break: break-all; }
+  .event-empty { color: var(--muted); font-size: 0.78rem; font-style: italic; }
+
+  .dl-hint {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+    font-size: 0.72rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .dl-hint strong { color: var(--accent); }
+  .dl-hint code {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 0.1em 0.35em;
+    color: var(--text);
+    font-size: 0.7rem;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 1.2rem 2.5rem;
+    font-size: 0.7rem;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  @media (max-width: 768px) {
+    .main-grid { grid-template-columns: 1fr; }
+    .form-area { border-right: none; border-bottom: 1px solid var(--border); }
+    .hero-strip { flex-direction: column; align-items: flex-start; }
+    .page-num { display: none; }
+    nav { padding: 1rem 1.2rem; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- GTM NOSCRIPT -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Form<span>Lab</span></div>
+  <div class="nav-links">
+    <button class="nav-link active" onclick="showPage('contact')">Contact Form</button>
+    <button class="nav-link" onclick="showPage('checkout')">Checkout Form</button>
+  </div>
+  <div class="gtm-badge">
+    <div class="gtm-dot" id="gtm-dot"></div>
+    GTM READY
+  </div>
+</nav>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ═══════════════ PAGE 1: CONTACT ═══════════════ -->
+<div class="page active" id="page-contact">
+  <div class="hero-strip">
+    <div>
+      <div class="hero-tag">Page 01 / Contact</div>
+      <h1 class="hero-title">Get in <em>Touch</em></h1>
+      <p class="hero-desc">A multi-field contact form. Perfect for testing <strong>form_start</strong>, <strong>form_submit</strong>, and field-level interaction events in GTM.</p>
+    </div>
+    <div class="page-num">01</div>
+  </div>
+
+  <div class="main-grid">
+    <div class="form-area">
+      <div class="section-label">Contact Details</div>
+      <form id="contact-form" novalidate>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name <span>*</span></label>
+            <input type="text" name="first_name" id="cf-first" placeholder="Ada" required />
+          </div>
+          <div class="form-group">
+            <label>Last Name <span>*</span></label>
+            <input type="text" name="last_name" id="cf-last" placeholder="Lovelace" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Email Address <span>*</span></label>
+          <input type="email" name="email" id="cf-email" placeholder="ada@example.com" required />
+        </div>
+
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="tel" name="phone" id="cf-phone" placeholder="+91 98765 43210" />
+        </div>
+
+        <div class="form-group">
+          <label>Enquiry Type <span>*</span></label>
+          <select name="enquiry_type" id="cf-type" required>
+            <option value="">— Select a topic —</option>
+            <option value="general">General Enquiry</option>
+            <option value="support">Technical Support</option>
+            <option value="billing">Billing</option>
+            <option value="partnership">Partnership</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>How did you hear about us?</label>
+          <div class="radio-group" id="source-group">
+            <label class="radio-item" onclick="selectRadio(this)">
+              <input type="radio" name="source" value="search" /> Search Engine
+            </label>
+            <label class="radio-item" onclick="selectRadio(this)">
+              <input type="radio" name="source" value="social" /> Social Media
+            </label>
+            <label class="radio-item" onclick="selectRadio(this)">
+              <input type="radio" name="source" value="referral" /> Referral
+            </label>
+            <label class="radio-item" onclick="selectRadio(this)">
+              <input type="radio" name="source" value="other" /> Other
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Message <span>*</span></label>
+          <textarea name="message" id="cf-message" placeholder="Tell us what's on your mind…" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Interests (check all that apply)</label>
+          <div class="check-group">
+            <label class="check-item" onclick="toggleCheck(this)">
+              <input type="checkbox" name="interests" value="analytics" /> Analytics & Tracking
+            </label>
+            <label class="check-item" onclick="toggleCheck(this)">
+              <input type="checkbox" name="interests" value="ads" /> Ads & Campaigns
+            </label>
+            <label class="check-item" onclick="toggleCheck(this)">
+              <input type="checkbox" name="interests" value="seo" /> SEO
+            </label>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-submit">Submit Contact Form →</button>
+      </form>
+    </div>
+
+    <div class="sidebar">
+      <div class="sidebar-title">📡 dataLayer Events</div>
+      <div class="event-log" id="event-log-contact">
+        <div class="event-empty">No events yet. Interact with the form.</div>
+      </div>
+      <div class="dl-hint">
+        <strong>GTM Triggers to build:</strong><br><br>
+        • <code>form_start</code> — first field focus<br>
+        • <code>form_submit</code> — on submit<br>
+        • <code>field_change</code> — on select/radio change<br><br>
+        Open browser console and type <code>dataLayer</code> to inspect all pushed events.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ PAGE 2: CHECKOUT ═══════════════ -->
+<div class="page" id="page-checkout">
+  <div class="hero-strip">
+    <div>
+      <div class="hero-tag">Page 02 / Checkout</div>
+      <h1 class="hero-title">Complete <em>Order</em></h1>
+      <p class="hero-desc">An e-commerce checkout form. Test <strong>begin_checkout</strong>, <strong>add_payment_info</strong>, and <strong>purchase</strong> events — mirroring GA4 ecommerce.</p>
+    </div>
+    <div class="page-num">02</div>
+  </div>
+
+  <div class="main-grid">
+    <div class="form-area">
+      <div class="section-label">Shipping Information</div>
+      <form id="checkout-form" novalidate>
+
+        <div class="form-group">
+          <label>Full Name <span>*</span></label>
+          <input type="text" name="full_name" id="ch-name" placeholder="Alan Turing" required />
+        </div>
+
+        <div class="form-group">
+          <label>Email Address <span>*</span></label>
+          <input type="email" name="email" id="ch-email" placeholder="alan@example.com" required />
+        </div>
+
+        <div class="form-group">
+          <label>Shipping Address <span>*</span></label>
+          <input type="text" name="address" id="ch-addr" placeholder="221B Baker Street" required />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>City <span>*</span></label>
+            <input type="text" name="city" id="ch-city" placeholder="Hyderabad" required />
+          </div>
+          <div class="form-group">
+            <label>PIN Code <span>*</span></label>
+            <input type="text" name="pin" id="ch-pin" placeholder="500001" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Country</label>
+          <select name="country" id="ch-country">
+            <option value="IN">India</option>
+            <option value="US">United States</option>
+            <option value="GB">United Kingdom</option>
+            <option value="AU">Australia</option>
+            <option value="SG">Singapore</option>
+          </select>
+        </div>
+
+        <div class="section-label" style="margin-top:2rem">Payment Details</div>
+
+        <div class="form-group">
+          <label>Payment Method <span>*</span></label>
+          <div class="radio-group" id="payment-group">
+            <label class="radio-item" onclick="selectRadio(this)">
+              <input type="radio" name="payment_method" value="upi" /> UPI
+            </label>
+            <label class="radio-item" onclick="selectRadio(this)">
+              <input type="radio" name="payment_method" value="card" /> Credit / Debit Card
+            </label>
+            <label class="radio-item" onclick="selectRadio(this)">
+              <input type="radio" name="payment_method" value="netbanking" /> Net Banking
+            </label>
+            <label class="radio-item" onclick="selectRadio(this)">
+              <input type="radio" name="payment_method" value="cod" /> Cash on Delivery
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Promo Code</label>
+          <input type="text" name="promo_code" id="ch-promo" placeholder="FORMLAB20" />
+        </div>
+
+        <!-- Order Summary -->
+        <div style="border:1px solid var(--border);border-radius:var(--radius);padding:1rem;margin-bottom:1.5rem;font-size:0.8rem;">
+          <div style="display:flex;justify-content:space-between;padding:0.4rem 0;border-bottom:1px solid var(--border);color:var(--muted)">
+            <span>GTM Mastery Course</span><span style="color:var(--text)">₹1,999</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:0.4rem 0;border-bottom:1px solid var(--border);color:var(--muted)">
+            <span>Analytics Bootcamp</span><span style="color:var(--text)">₹1,499</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:0.6rem 0 0;font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;">
+            <span>Total</span><span style="color:var(--accent)">₹3,498</span>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-submit btn-pink">Place Order →</button>
+      </form>
+    </div>
+
+    <div class="sidebar">
+      <div class="sidebar-title">📡 dataLayer Events</div>
+      <div class="event-log" id="event-log-checkout">
+        <div class="event-empty">No events yet. Interact with the form.</div>
+      </div>
+      <div class="dl-hint">
+        <strong>GTM Triggers to build:</strong><br><br>
+        • <code>begin_checkout</code> — first field focus<br>
+        • <code>add_payment_info</code> — payment method select<br>
+        • <code>purchase</code> — on submit<br><br>
+        Match event names to GA4 recommended events for ecommerce tracking.
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span>FormLab — GTM Practice Site</span>
+  <span>Replace <code style="color:var(--accent)">GTM-XXXXXXX</code> with your real container ID</span>
+</footer>
+
+<script>
+  // ─── dataLayer init ───────────────────────────────────
+  window.dataLayer = window.dataLayer || [];
+
+  function pushEvent(eventObj) {
+    dataLayer.push(eventObj);
+    logEvent(eventObj);
+    activateGtmDot();
+  }
+
+  // ─── Navigation ───────────────────────────────────────
+  function showPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    event.target.classList.add('active');
+
+    pushEvent({ event: 'virtual_pageview', page_name: name, page_path: '/' + name });
+  }
+
+  // ─── GTM Dot pulse ────────────────────────────────────
+  function activateGtmDot() {
+    const dot = document.getElementById('gtm-dot');
+    dot.classList.add('active');
+    clearTimeout(dot._t);
+    dot._t = setTimeout(() => dot.classList.remove('active'), 1200);
+  }
+
+  // ─── Event log ────────────────────────────────────────
+  function logEvent(obj) {
+    const logId = document.getElementById('page-contact').classList.contains('active')
+      ? 'event-log-contact' : 'event-log-checkout';
+    const log = document.getElementById(logId);
+    const empty = log.querySelector('.event-empty');
+    if (empty) empty.remove();
+
+    const item = document.createElement('div');
+    item.className = 'event-item';
+    const time = new Date().toLocaleTimeString('en-IN', { hour12: false });
+    const dataStr = Object.entries(obj)
+      .filter(([k]) => k !== 'event')
+      .map(([k, v]) => `${k}: ${v}`)
+      .join(' | ');
+    item.innerHTML = `<span class="event-name">${obj.event}</span><span class="event-time">${time}</span>
+      ${dataStr ? `<div class="event-data">${dataStr}</div>` : ''}`;
+    log.prepend(item);
+  }
+
+  // ─── Toast ────────────────────────────────────────────
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
+
+  // ─── Radio / Checkbox helpers ─────────────────────────
+  function selectRadio(label) {
+    const group = label.parentElement;
+    group.querySelectorAll('.radio-item').forEach(l => l.classList.remove('selected'));
+    label.classList.add('selected');
+  }
+  function toggleCheck(label) {
+    label.classList.toggle('selected');
+  }
+
+  // ─── CONTACT FORM ─────────────────────────────────────
+  let contactStarted = false;
+  document.getElementById('contact-form').querySelectorAll('input, select, textarea')
+    .forEach(el => {
+      el.addEventListener('focus', () => {
+        if (!contactStarted) {
+          contactStarted = true;
+          pushEvent({ event: 'form_start', form_id: 'contact_form', form_name: 'Contact Form' });
+        }
+      });
+
+      el.addEventListener('change', () => {
+        if (el.tagName === 'SELECT' || el.type === 'radio' || el.type === 'checkbox') {
+          pushEvent({
+            event: 'field_change',
+            form_id: 'contact_form',
+            field_name: el.name,
+            field_value: el.value
+          });
+        }
+      });
+    });
+
+  document.getElementById('contact-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const fd = new FormData(this);
+    const interests = fd.getAll('interests').join(',') || 'none';
+    pushEvent({
+      event: 'form_submit',
+      form_id: 'contact_form',
+      form_name: 'Contact Form',
+      enquiry_type: fd.get('enquiry_type') || 'not_selected',
+      source: fd.get('source') || 'not_selected',
+      interests: interests
+    });
+    showToast('✓ Contact form submitted — check dataLayer!');
+    contactStarted = false;
+  });
+
+  // ─── CHECKOUT FORM ────────────────────────────────────
+  let checkoutStarted = false;
+  document.getElementById('checkout-form').querySelectorAll('input, select')
+    .forEach(el => {
+      el.addEventListener('focus', () => {
+        if (!checkoutStarted) {
+          checkoutStarted = true;
+          pushEvent({
+            event: 'begin_checkout',
+            currency: 'INR',
+            value: 3498,
+            items: [
+              { item_name: 'GTM Mastery Course', price: 1999 },
+              { item_name: 'Analytics Bootcamp', price: 1499 }
+            ]
+          });
+        }
+      });
+
+      el.addEventListener('change', () => {
+        if (el.name === 'payment_method') {
+          pushEvent({
+            event: 'add_payment_info',
+            currency: 'INR',
+            value: 3498,
+            payment_type: el.value
+          });
+        }
+        if (el.name === 'country') {
+          pushEvent({ event: 'field_change', form_id: 'checkout_form', field_name: 'country', field_value: el.value });
+        }
+      });
+    });
+
+  document.getElementById('checkout-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const fd = new FormData(this);
+    const txnId = 'TXN-' + Date.now();
+    pushEvent({
+      event: 'purchase',
+      transaction_id: txnId,
+      currency: 'INR',
+      value: 3498,
+      payment_type: fd.get('payment_method') || 'not_selected',
+      promo_code: fd.get('promo_code') || 'none',
+      items: [
+        { item_name: 'GTM Mastery Course', price: 1999, quantity: 1 },
+        { item_name: 'Analytics Bootcamp', price: 1499, quantity: 1 }
+      ]
+    });
+    showToast('✓ Order placed — purchase event fired!');
+    checkoutStarted = false;
+  });
+</script>
+</body>
+</html>
